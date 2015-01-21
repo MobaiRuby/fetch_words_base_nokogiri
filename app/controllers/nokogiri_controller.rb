@@ -6,25 +6,21 @@ class NokogiriController < ApplicationController
 
     news_tmp_file = open('http://news.baidu.com')
 
-    Rails.logger.error(news_tmp_file)
-
-# Parse the contents of the temporary file as HTML
+    # Parse the contents of the temporary file as HTML
     doc = Nokogiri::XML(news_tmp_file)
 
-    Rails.logger.info("doc------>#{doc}<---------doc")
-
-# Define the css selectors to be used for extractions, most
+    # Define the css selectors to be used for extractions, most
     article_css_class         =".esc-layout-article-cell"
     article_header_css_class  ="span.titletext"
     article_summary_css_class =".esc-lead-snippet-wrapper"
 
-# extract all the articles
+    # extract all the articles
     articles = doc.css(article_css_class)
 
-#html output
+    #html output
     html = ""
 
-#extract the title from the articles
+    #extract the title from the articles
     articles.each do |article|
       title_nodes = article.css(article_header_css_class)
 
@@ -55,15 +51,9 @@ class NokogiriController < ApplicationController
       # there it as a different semantic by invoking #text in all the children nodes
       html += "%s\n%s\n%s\n\n\n" % [prime_title.text, separator, summary_node.text]
 
-      puts html
-
     end
 
-    Rails.logger.info("html-------->#{html}<------------")
-
-    @content = doc
-
-    # render :text => html,:content_type => "text/plain"
+    render :text => html,:content_type => "text/plain"
 
   end
 
